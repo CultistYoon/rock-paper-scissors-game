@@ -32,7 +32,7 @@ interface AiPattern {
 }
 
 // 상수 정의
-const CHOICES: { value: Choice; icon: any; label: string; color: string }[] = [
+const CHOICES: { value: Choice; icon: React.ElementType; label: string; color: string }[] = [
   { value: "rock", icon: Mountain, label: "바위", color: "text-gray-600" },
   { value: "paper", icon: Hand, label: "보", color: "text-blue-600" },
   { value: "scissors", icon: Scissors, label: "가위", color: "text-red-600" },

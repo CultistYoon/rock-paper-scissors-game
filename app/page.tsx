@@ -115,7 +115,7 @@ export default function RockPaperScissorsGame() {
   }, [aiPattern])
 
   // AI 심리전 로직
-  const getAiStrategicChoice = useCallback((): { choice: Choice; hintType: number; hintValue: string | null; initialDeceptionChoice?: Choice; } => {
+  const getAiStrategicChoice = useCallback((): { choice: Choice; initialDeceptionChoice?: Choice; } => {
     const choices: Choice[] = ["rock", "paper", "scissors"];
     const counter: Record<Choice, Choice> = { rock: "paper", paper: "scissors", scissors: "rock" };
     
@@ -125,7 +125,7 @@ export default function RockPaperScissorsGame() {
       const actualChoice = counter[deceivingChoice]; // 기만 패를 이기는 패 (AI가 실제로 낼 패)
       setAiDeceptionState({ active: true, initialChoice: deceivingChoice, finalChoice: actualChoice });
       setAiHintText(`AI가 3연패를 했습니다. 당신을 속이려 합니다! (${CHOICES.find(c => c.value === deceivingChoice)?.label}?)`); // 기만 힌트 (어떤 패로 기만하는지 명시)
-      return { choice: actualChoice, hintType: 3, hintValue: CHOICES.find(c => c.value === deceivingChoice)?.label, initialDeceptionChoice: deceivingChoice };
+      return { choice: actualChoice, initialDeceptionChoice: deceivingChoice };
     }
 
     // 유형 1: 플레이어가 자주 낸 패 눈치챘을 때
@@ -147,7 +147,7 @@ export default function RockPaperScissorsGame() {
 
       if (maxCount >= 2 && Math.random() < 0.6) { // 60% 확률로 최다 빈도에 대한 카운터
         setAiHintText(`AI는 당신이 '${CHOICES.find(c => c.value === mostFrequentChoice)?.label}'을(를) 제일 많이 냈다는 걸 눈치챘습니다.`);
-        return { choice: counter[mostFrequentChoice], hintType: 1, hintValue: CHOICES.find(c => c.value === mostFrequentChoice)?.label };
+        return { choice: counter[mostFrequentChoice] };
       }
     }
 
@@ -165,13 +165,13 @@ export default function RockPaperScissorsGame() {
 
       if (maxWinCount > 1 && Math.random() < 0.5) { // 50% 확률로 최다 승리 패에 대한 카운터
         setAiHintText(`AI는 당신이 '${CHOICES.find(c => c.value === mostWinningChoice)?.label}'으로 많이 이겼다는 걸 눈치챘습니다.`);
-        return { choice: counter[mostWinningChoice], hintType: 2, hintValue: CHOICES.find(c => c.value === mostWinningChoice)?.label };
+        return { choice: counter[mostWinningChoice] };
       }
     }
 
     // 기본 랜덤 선택
     setAiHintText("AI는 당신의 다음 수를 예측하려 합니다."); // 기본 힌트
-    return { choice: choices[Math.floor(Math.random() * choices.length)], hintType: 0, hintValue: null };
+    return { choice: choices[Math.floor(Math.random() * choices.length)] };
   }, [aiPattern]);
 
 
@@ -408,7 +408,7 @@ export default function RockPaperScissorsGame() {
                     <p>단순한 가위바위보 반복을 넘어, 플레이어가 게임에 꾸준히 접속하고 플레이할 수 있도록 **수집, 성장 요소**를 도입합니다.</p>
                     <ul>
                         <li><b>캐릭터 및 스킨 수집:</b> 가위바위보 패를 내는 '손' 또는 플레이어의 아바타 역할을 하는 캐릭터에 **다양한 스킨**을 디자인하여 수집 욕구를 자극합니다. **희귀도(일반, 희귀, 영웅, 전설)**를 부여하여 가치를 높이고, 특정 스킨 획득 시 특별한 애니메이션이나 효과를 추가할 수 있습니다.
-                            <div class="trade-off"><b>장점:</b> 플레이어가 자신을 표현하고 애착을 형성하며, 잠재적인 수익 모델(인앱 구매)과 연계됩니다.
+                            <div className="trade-off"><b>장점:</b> 플레이어가 자신을 표현하고 애착을 형성하며, 잠재적인 수익 모델(인앱 구매)과 연계됩니다.
                                 <b>단점:</b> 초기 디자인 및 개발 비용이 발생할 수 있습니다.
                                 <b>Trade-off:</b> 모든 스킨을 유료화하기보다, 무료로 얻을 수 있는 스킨과 유료 스킨을 적절히 배분하여 플레이어 참여를 유도하면서 수익을 창출하는 균형을 찾습니다.</div>
                         </li>
@@ -421,7 +421,7 @@ export default function RockPaperScissorsGame() {
                     <ul>
                         <li><b>주요 재화: 골드 (또는 코인):</b> 승리 시 기본 보상, 퀘스트 완료, 레벨업 보너스, 광고 시청 (선택 사항)으로 획득하며, 새로운 캐릭터 스킨 구매, 소모성 아이템 구매(예: '예측 부스터' 아이템), 도전 횟수 충전(옵션)에 사용됩니다.</li>
                         <li><b>프리미엄 재화: 다이아몬드 (또는 보석):</b> 현금 결제, 매우 희귀한 퀘스트 보상, 특별 이벤트 보상으로 획득하며, 희귀/전설 등급의 스킨 구매, 특정 캐릭터 즉시 잠금 해제, 골드 즉시 구매(환전)에 사용됩니다.
-                            <div class="trade-off"><b>Trade-off:</b> 유료 재화가 게임 플레이 자체에 직접적인 'Pay-to-Win' 영향을 주지 않도록 설계합니다. 대신 **수집, 꾸미기, 편의성**에 중점을 두어 'Pay-to-Customize' 또는 'Pay-for-Convenience' 모델을 지향함으로써, 무료 플레이어와 유료 플레이어 간의 **격차를 최소화**하고 공정한 경쟁 환경을 유지합니다.</div>
+                            <div className="trade-off"><b>Trade-off:</b> 유료 재화가 게임 플레이 자체에 직접적인 'Pay-to-Win' 영향을 주지 않도록 설계합니다. 대신 **수집, 꾸미기, 편의성**에 중점을 두어 'Pay-to-Customize&apos; 또는 'Pay-for-Convenience' 모델을 지향함으로써, 무료 플레이어와 유료 플레이어 간의 **격차를 최소화**하고 공정한 경쟁 환경을 유지합니다.</div>
                         </li>
                     </ul>
 
@@ -434,7 +434,7 @@ export default function RockPaperScissorsGame() {
                             <ul>
                                 <li><b>최초 실행 시:</b> 간단한 애니메이션과 텍스트 가이드로 가위바위보의 기본 규칙과 게임의 핵심 요소를 시각적으로 설명합니다.</li>
                                 <li><b>점진적 튜토리얼:</b> 메타 게임 요소(스킨 상점, 퀘스트)는 플레이어가 일정 레벨에 도달하거나 특정 조건을 만족했을 때 **친절한 팝업 가이드**를 통해 점진적으로 소개하여, 처음부터 정보 과부하로 인해 압도되는 것을 방지합니다.</li>
-                                <li><b>명확한 보상 시각화:</b> 퀘스트 완료 시 "퀘스트 완료!"와 함께 보상이 화려한 **애니메이션과 함께 떨어지는 연출**을 통해 플레이어의 **성취감을 극대화**합니다.</li>
+                                <li><b>명확한 보상 시각화:</b> 퀘스트 완료 시 "&quot;퀘스트 완료!&quot;"와 함께 보상이 화려한 **애니메이션과 함께 떨어지는 연출**을 통해 플레이어의 **성취감을 극대화**합니다.</li>
                             </ul>
                         </li>
                     </ul>
@@ -458,12 +458,12 @@ export default function RockPaperScissorsGame() {
 
                 ---
 
-                <div class="section-box" style={{backgroundColor: '#ecf0f1', borderLeft: '5px solid #3498db', padding: '15px 20px', marginTop: '20px', borderRadius: '5px'}}>
+                <div className="section-box" style={{backgroundColor: '#ecf0f1', borderLeft: '5px solid #3498db', padding: '15px 20px', marginTop: '20px', borderRadius: '5px'}}>
                     <h2>4단계: 추가 대안 및 자원</h2>
                     <p>이 게임의 잠재력을 더욱 확장하기 위한 대안적인 아이디어와 유용한 개발 자원들을 제시합니다.</p>
                     <ul>
                         <li><b>대안: 특수 능력 도입:</b> 각 가위/바위/보 패마다 **한 게임에 한 번 사용할 수 있는 특수 능력**을 도입할 수 있습니다. 예를 들어, '바위'는 무승부 시 상대의 다음 패를 미리 볼 수 있는 능력, '가위'는 일정 확률로 상대의 패를 한 번 무효화하는 능력 등입니다.
-                            <div class="trade-off"><b>장점:</b> 게임에 전략적 깊이를 더하고, 플레이어에게 더 많은 선택의 폭을 제공합니다.
+                            <div className="trade-off"><b>장점:</b> 게임에 전략적 깊이를 더하고, 플레이어에게 더 많은 선택의 폭을 제공합니다.
                                 <b>단점:</b> 능력 간의 밸런스 조절이 매우 어려워지며, 게임의 단순성을 해칠 수 있습니다. 복잡도가 증가하고 개발 시간이 늘어납니다. '짧고 가볍게'라는 기획 의도와 충돌할 수 있으므로 신중한 접근이 필요합니다.</div>
                         </li>
                         <li><b>툴 및 자료:</b>
@@ -479,7 +479,7 @@ export default function RockPaperScissorsGame() {
 
                 ---
 
-                <div class="section-box" style={{backgroundColor: '#ecf0f1', borderLeft: '5px solid #3498db', padding: '15px 20px', marginTop: '20px', borderRadius: '5px'}}>
+                <div className="section-box" style={{backgroundColor: '#ecf0f1', borderLeft: '5px solid #3498db', padding: '15px 20px', marginTop: '20px', borderRadius: '5px'}}>
                     <h2>5단계: 요약 및 검토 포인트</h2>
                     <p>이 웹 가위바위보 게임 기획서는 **단순한 게임 플레이에 심리전 강화, 몰입도 높은 연출, 그리고 장기적인 동기를 부여하는 메타 게임 요소**를 결합하여 플레이어에게 반복적인 재미와 성취감을 제공하는 것을 핵심 목표로 합니다.</p>
                     <h3>핵심 요약:</h3>
@@ -487,7 +487,7 @@ export default function RockPaperScissorsGame() {
                         <li><b>프로젝트 개요:</b> 쉬운 규칙, 짧은 플레이 타임, 심리전, 반복 플레이 유도를 통한 몰입감 있는 가위바위보 경험 제공.</li>
                         <li><b>게임 시스템:</b> 예측-선택-결과-보상-피드백의 코어 루프와 AI 심리전을 통한 심층적 재미 추구.</li>
                         <li><b>메타 게임:</b> 캐릭터/스킨 수집, 레벨업, 퀘스트를 통한 지속적인 플레이 동기 부여.</li>
-                        <li><b>경제 시스템:</b> 골드와 다이아몬드의 명확한 분리를 통한 'Pay-to-Customize' 모델 지향.</li>
+                        <li><b>경제 시스템:</b> 골드와 다이아몬드의 명확한 분리를 통한 'Pay-to-Customize&apos; 모델 지향.</li>
                         <li><b>UX/UI:</b> 직관적인 조작, 간결한 레이아웃, 점진적 튜토리얼, 명확한 보상 시각화로 사용자 편의성 극대화.</li>
                         <li><b>밸런싱:</b> AI 알고리즘 및 수치 기반의 지속적인 개선.</li>
                         <li><b>MDA 프레임워크:</b> 메카닉, 다이내믹스, 미학 관점에서 게임 디자인의 의도와 플레이어 경험을 명확히 정의.</li>
@@ -798,7 +798,7 @@ export default function RockPaperScissorsGame() {
                       데이터 초기화
                     </Button>
                     <div className="text-sm text-gray-600">
-                      <p>게임 버전: 1.0.1</p>
+                      <p>게임 버전: 1.0.2</p>
                       <p>개발: 허윤오오오오</p>
                     </div>
                   </div>

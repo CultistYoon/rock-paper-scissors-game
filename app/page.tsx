@@ -97,7 +97,15 @@ export default function Page() {
     setResult(r);
 
     setStats((prev) => {
-      let { wins, losses, draws, totalGames, winStreak, maxWinStreak, gold, level, exp } = prev;
+      let wins = prev.wins;
+      let losses = prev.losses;
+      let draws = prev.draws;
+      let totalGames = prev.totalGames;
+      let winStreak = prev.winStreak;
+      let maxWinStreak = prev.maxWinStreak;
+      let gold = prev.gold;
+      let level = prev.level;
+      let exp = prev.exp;
       totalGames += 1;
       if (r === "win") {
         wins += 1;

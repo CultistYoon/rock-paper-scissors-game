@@ -104,7 +104,7 @@ export default function Page() {
       let winStreak = prev.winStreak;
       let maxWinStreak = prev.maxWinStreak;
       let gold = prev.gold;
-      let level = prev.level;
+      const level = prev.level;
       let exp = prev.exp;
       totalGames += 1;
       if (r === "win") {

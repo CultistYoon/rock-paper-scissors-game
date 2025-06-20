@@ -104,7 +104,7 @@ export default function RockPaperScissorsGame() {
       setShowPlanPopup(true);
       localStorage.setItem("rps-has-visited", "true"); // 다시 뜨지 않도록 기록
     }
-  }, [])
+  }, [SHOW_PLAN_ON_FIRST_LOAD])
 
   useEffect(() => {
     localStorage.setItem("rps-game-stats", JSON.stringify(gameStats))
@@ -202,7 +202,7 @@ export default function RockPaperScissorsGame() {
   // 레벨업 체크 및 스킨 해금
   const checkLevelUpAndUnlockSkins = (currentWins: number, currentLevel: number, currentUnlockedSkins: string[]) => {
     let newLevel = currentLevel;
-    let unlocked = [...currentUnlockedSkins];
+    const unlocked = [...currentUnlockedSkins];
 
     // 현재 총 승리 횟수로 도달할 수 있는 최대 레벨 계산
     for (let i = LEVEL_WIN_REQUIREMENTS.length - 1; i >= 0; i--) {
@@ -236,7 +236,7 @@ export default function RockPaperScissorsGame() {
     setRewardAnimation(null)
     setAiDeceptionState({ active: false, initialChoice: null, finalChoice: null }); // 기만 상태 초기화
 
-    const { choice: aiPredictedChoice, hintType, hintValue, initialDeceptionChoice } = getAiStrategicChoice();
+    const { choice: aiPredictedChoice, initialDeceptionChoice } = getAiStrategicChoice();
 
     // AI 기만 전략 실행 타이밍 (애니메이션 중간에 AI 패 변경)
     if (initialDeceptionChoice) {
@@ -798,7 +798,7 @@ export default function RockPaperScissorsGame() {
                       데이터 초기화
                     </Button>
                     <div className="text-sm text-gray-600">
-                      <p>게임 버전: 1.0.0</p>
+                      <p>게임 버전: 1.0.1</p>
                       <p>개발: 허윤오오오오</p>
                     </div>
                   </div>
